@@ -1,0 +1,50 @@
+@model capproj.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>Dashboard</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Unprocessed Orders</h5>
+                <p class="card-text display-6">@Model.UnprocessedCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Orders This Month</h5>
+                <p class="card-text display-6">@Model.OrdersThisMonth</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2>Last 5 Orders</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Created</th>
+            <th>Status</th>
+            <th>Type</th>
+            <th>Items</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var o in Model.LastFiveOrders)
+{
+    <tr>
+        <td>@o.Id</td>
+        <td>@o.CreatedAt.ToLocalTime().ToString("g")</td>
+        <td>@(o.Status ? "Completed" : "Pending")</td>
+        <td>@(o.Type ? "Special" : "Standard")</td>
+        <td>@(o.orderLines?.Sum(ol => ol.Quantity) ?? 0)</td>
+    </tr>
+}
+    </tbody>
+</table>

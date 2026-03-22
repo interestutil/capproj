@@ -1,0 +1,47 @@
+@model capproj.Models.Order
+@{
+    ViewData["Title"] = "Delete Order";
+}
+
+<h1>Delete Order</h1>
+
+<div class="mb-3">
+    <label class="form-label">Created</label>
+    <div>@Model.CreatedAt.ToLocalTime().ToString("f")</div>
+</div>
+<div class="mb-3">
+    <label class="form-label">Status</label>
+    <div>@(Model.Status ? "Completed" : "Pending")</div>
+</div>
+<div class="mb-3">
+    <label class="form-label">Type</label>
+    <div>@(Model.Type ? "Special" : "Standard")</div>
+</div>
+
+<h3>Order Lines</h3>
+@if (Model.orderLines != null && Model.orderLines.Any())
+{
+    <table class="table">
+        <thead><tr><th>Shelf</th><th>Quantity</th></tr></thead>
+        <tbody>
+        @foreach (var ol in Model.orderLines)
+        {
+            <tr>
+                <td>@(ol.shelf?.Name ?? $"Shelf {ol.ShelfId}")</td>
+                <td>@ol.Quantity</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No lines on this order.</p>
+}
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

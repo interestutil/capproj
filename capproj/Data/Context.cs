@@ -6,8 +6,6 @@ namespace capproj.Data
     public class Context : DbContext
     {
         public Context() { }
-        public Context(DbContextOptions options) : base(options) { }
-        // helpful strongly-typed ctor commonly used by DI
         public Context(DbContextOptions<Context> options) : base(options) { }
 
         public DbSet<Order> orders { get; set; }
@@ -21,7 +19,8 @@ namespace capproj.Data
             // Configure OrderLines as a regular entity with its own primary key
             modelBuilder.Entity<OrderLines>(ol =>
             {
-                ol.HasKey(x => new {x.OrderId, x.ShelfId});
+                ol.HasKey(x => x.Id);
+                ol.Property(x => x.Id).ValueGeneratedOnAdd();
 
                 ol.HasOne(x => x.order)
                   .WithMany(o => o.orderLines)

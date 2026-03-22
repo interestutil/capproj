@@ -1,0 +1,22 @@
+@model capproj.Models.Shelf
+@{
+    ViewData["Title"] = "Delete Shelf";
+}
+
+<h1>Delete Shelf</h1>
+
+<div class="mb-3">
+    <label class="form-label">Name</label>
+    <div>@Model.Name</div>
+</div>
+<div class="mb-3">
+    <label class="form-label">Display Index</label>
+    <div>@Model.DisplayIndex</div>
+</div>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

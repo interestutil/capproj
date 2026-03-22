@@ -33,7 +33,10 @@ namespace capproj.Repositories
 
         public async Task<Shelf?> GetByIdAsync(int id)
         {
-            return await _context.shelves.FindAsync(id);
+            return await _context.shelves
+                .Include(s => s.orderLines)
+                    .ThenInclude(ol => ol.order)
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task UpdateAsync(Shelf shelf)

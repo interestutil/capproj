@@ -11,9 +11,10 @@ namespace capproj.Models
 
         [ForeignKey("OrderId")]
         // Navigation back to parent order
-        public Order order { get; set; }
+        public Order? order { get; set; }
 
+        [ForeignKey("ShelfId")]
         // Navigation to shelf
-        public Shelf shelf { get; set; }
+        public Shelf? shelf { get; set; }
     }
 }

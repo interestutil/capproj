@@ -1,0 +1,36 @@
+@model List<capproj.Models.Shelf>
+@{
+    ViewData["Title"] = "Shelves";
+}
+
+<h1>Shelves</h1>
+
+<p>
+    <a class="btn btn-primary" asp-controller="Shelves" asp-action="Create">Create New Shelf</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Display Index</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var s in Model)
+    {
+        <tr>
+            <td>@s.Id</td>
+            <td>@s.Name</td>
+            <td>@s.DisplayIndex</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-info">Details</a>
+                <a asp-action="Edit" asp-route-id="@s.Id" class="btn btn-sm btn-primary">Edit</a>
+                <a asp-action="Delete" asp-route-id="@s.Id" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,130 @@
+@model capproj.Models.Order
+@{
+    ViewData["Title"] = "Edit Order";
+    var shelves = ViewBag.Shelves as List<capproj.Models.Shelf> ?? new List<capproj.Models.Shelf>();
+}
+
+<h1>Edit Order</h1>
+
+<form asp-action="Edit" method="post" id="order-form">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <div class="form-check mb-3">
+        <input asp-for="Type" class="form-check-input" />
+        <label asp-for="Type" class="form-check-label">Special Type</label>
+    </div>
+    <div class="form-check mb-3">
+        <input asp-for="Status" class="form-check-input" />
+        <label asp-for="Status" class="form-check-label">Completed</label>
+    </div>
+
+    <h4>Order Lines</h4>
+    <table class="table" id="lines-table">
+        <thead>
+            <tr>
+                <th>Shelf</th>
+                <th>Quantity</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+@{ 
+    var idx = 0;
+    if (Model.orderLines != null && Model.orderLines.Any())
+    {
+        foreach (var line in Model.orderLines)
+        {
+            <tr>
+                <td>
+                    <input type="hidden" name="orderLines[@idx].Id" value="@line.Id" />
+                    <select name="orderLines[@idx].ShelfId" class="form-select">
+                        <option value="">-- select --</option>
+                        @foreach (var s in shelves)
+                        {
+                            if (s.Id == line.ShelfId)
+                            {
+                                <option value="@s.Id" selected>@s.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@s.Id">@s.Name</option>
+                            }
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="orderLines[@idx].Quantity" class="form-control" value="@line.Quantity" min="1" />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm remove-line">Remove</button>
+                </td>
+            </tr>
+            idx++;
+        }
+    }
+    else
+    {
+        <tr>
+            <td>
+                <select name="orderLines[0].ShelfId" class="form-select">
+                    <option value="">-- select --</option>
+                    @foreach (var s in shelves)
+                    {
+                        <option value="@s.Id">@s.Name</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <input type="number" name="orderLines[0].Quantity" class="form-control" value="1" min="1" />
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm remove-line">Remove</button>
+            </td>
+        </tr>
+    }
+}
+        </tbody>
+    </table>
+    <button type="button" id="add-line" class="btn btn-secondary mb-3">Add Line</button>
+
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        (function(){
+            let index = @(Model.orderLines?.Count() ?? 1);
+            const shelves = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(shelves.Select(s => new { s.Id, s.Name })));
+
+            document.getElementById('add-line').addEventListener('click', function(){
+                const tbody = document.querySelector('#lines-table tbody');
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <select name="orderLines[${index}].ShelfId" class="form-select">
+                            <option value="">-- select --</option>
+                            ${shelves.map(s => `<option value="${s.Id}">${s.Name}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="orderLines[${index}].Quantity" class="form-control" value="1" min="1" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm remove-line">Remove</button>
+                    </td>`;
+                tbody.appendChild(tr);
+                index++;
+            });
+
+            document.querySelector('#lines-table').addEventListener('click', function(e){
+                if (e.target && e.target.classList.contains('remove-line')){
+                    const tr = e.target.closest('tr');
+                    tr.remove();
+                }
+            });
+        })();
+    </script>
+}

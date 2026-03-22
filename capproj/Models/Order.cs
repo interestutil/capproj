@@ -1,4 +1,6 @@
-﻿namespace capproj.Models
+﻿using System;
+
+namespace capproj.Models
 {
     public class Order
     {
@@ -6,6 +8,8 @@
         public bool Type { get; set; }
         public bool Status { get; set; }
         // Owned/weak collection of order lines. An OrderLines instance only exists with its parent Order.
-        public List<OrderLines> orderLines { get; set; } = new();
+        public List<OrderLines> orderLines { get; set; } = new List<OrderLines>();
+        // When the order was created
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
