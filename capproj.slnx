@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="../capapi/capapi/capapi.csproj" />
+  <Project Path="capapi/capapi.csproj" />
   <Project Path="capproj/capproj.csproj" />
 </Solution>
